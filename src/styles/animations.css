@@ -1,0 +1,68 @@
+// animations.css
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.animate-typing {
+  animation: typing 0.8s infinite;
+}
+
+/* For markdown content inside chat bubbles */
+.prose {
+  color: currentColor;
+}
+
+.prose code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.prose pre {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.prose ul {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  list-style-position: inside;
+}
+
+.prose a {
+  text-decoration: underline;
+}
+
+.prose blockquote {
+  border-left: 4px solid currentColor;
+  padding-left: 16px;
+  font-style: italic;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid currentColor;
+  padding: 8px;
+}
