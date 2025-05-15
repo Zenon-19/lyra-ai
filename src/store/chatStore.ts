@@ -12,7 +12,7 @@ interface ChatState {
   clearHistory: () => Promise<void>;
 }
 
-export const useChatStore = create<ChatState>((set, get) => ({
+export const useChatStore = create<ChatState>((set) => ({
   messages: [],
   isTyping: false,
   addMessage: (content, sender) => {

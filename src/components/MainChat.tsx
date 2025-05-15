@@ -1,7 +1,6 @@
 // MainChat.tsx
 import { useRef, useEffect } from 'react';
 import ChatHistory from './ChatHistory';
-import type { ChatMessage } from './ChatHistory';
 import InputBar from './InputBar';
 import StreamingAssistantResponse from './StreamingAssistantResponse';
 import { useChatStore } from '../store/chatStore';
@@ -11,22 +10,12 @@ const MainChat: React.FC = () => {
   const chatRef = useRef<HTMLDivElement>(null);
 
   const handleSend = (text: string) => {
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: text,
-    };
-    addMessage(userMsg);
+    addMessage(text, 'user');
     setIsTyping(true);
 
     // Simulate Lyra response
     setTimeout(() => {
-      const lyraMsg: ChatMessage = {
-        id: Date.now().toString() + '-lyra',
-        sender: 'lyra',
-        content: `You said: **${text}**\n\nI can help you with that! 😊`,
-      };
-      addMessage(lyraMsg);
+      addMessage(`You said: **${text}**\n\nI can help you with that! 😊`, 'lyra');
       setIsTyping(false);
     }, 1500);
   };

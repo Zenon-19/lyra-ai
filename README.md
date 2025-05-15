@@ -27,7 +27,7 @@ A modern, responsive AI chat interface built with React, TypeScript, and Tailwin
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/lyra-ai.git
+git clone https://github.com/Zenon-19/lyra-ai.git
 cd lyra-ai
 ```
 

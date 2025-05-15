@@ -1,12 +1,53 @@
 // animations.css
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(10px);
+    filter: blur(5px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 @keyframes typing {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(0.97);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(217, 59, 59, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(217, 59, 59, 0.4);
+  }
+}
+
+@keyframes avatarBlink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes emotionTransition {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
 }
 
 .animate-fadeIn {
@@ -15,6 +56,14 @@
 
 .animate-typing {
   animation: typing 0.8s infinite;
+}
+
+/* Base Colors */
+:root {
+  --color-offwhite: #F7F7F8;
+  --color-charcoal: #1F1F1F;
+  --color-crimson: #D93B3B;
+  --color-stealth-blue: #007AFF;
 }
 
 /* For markdown content inside chat bubbles */
