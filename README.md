@@ -2,6 +2,23 @@
 
 A modern, responsive AI chat interface built with React, TypeScript, and TailwindCSS.
 
+## Vercel Deployment Instructions
+
+### Prerequisites
+- Vercel account
+- GitHub repository with this code
+
+### Steps to Deploy
+1. Fork or clone this repository to your GitHub account
+2. Log in to Vercel and click "New Project"
+3. Import your GitHub repository
+4. Configure your project settings:
+   - Framework preset: "Other"
+   - Build Command: `npm run vercel-build`
+   - Output Directory: `dist`
+5. Add environment variables from `.env.example`
+6. Deploy!
+
 ## Features
 
 - 💬 Beautiful chat interface with markdown support
