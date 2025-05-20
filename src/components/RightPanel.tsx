@@ -89,13 +89,18 @@ const RightPanel: React.FC = () => {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1 rounded-full text-sm capitalize transition-colors ${
+                  className={`px-3 py-1 rounded-full text-sm capitalize transition-colors font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-deepred/40 focus:ring-offset-2 duration-150 ${
                     selectedCategory === category 
-                      ? 'bg-deepred text-offwhite' 
+                      ? 'bg-deepred text-offwhite scale-105 shadow-md' 
                       : 'bg-charcoal/5 text-charcoal/60 hover:bg-charcoal/10'
                   }`}
                 >
-                  {category}
+                  <span className="inline-flex items-center gap-1">
+                    {category === 'context' && <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-pulse" />}
+                    {category === 'preference' && <span className="inline-block w-2 h-2 bg-purple-500 rounded-full animate-pulse" />}
+                    {category === 'fact' && <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                    {category}
+                  </span>
                 </button>
               ))}
             </div>
@@ -103,33 +108,50 @@ const RightPanel: React.FC = () => {
 
           <div className="flex-1 overflow-y-auto p-4">
             <AnimatePresence mode="popLayout">
-              {filteredMemories.map((memory) => (
+              {filteredMemories.length === 0 ? (
                 <motion.div
-                  key={memory.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="mb-3"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="flex flex-col items-center justify-center h-40 text-charcoal/60"
                 >
-                  <div className={`rounded-lg p-3 ${categoryColors[memory.category]}`}>
-                    <div className="text-sm">{memory.content}</div>
-                    <div className="text-xs opacity-60 mt-1">
-                      {new Intl.DateTimeFormat('en', { 
-                        hour: 'numeric', 
-                        minute: 'numeric',
-                        hour12: true 
-                      }).format(memory.timestamp)}
-                    </div>
-                  </div>
+                  <span className="text-3xl mb-2">🧠</span>
+                  <span className="text-base font-medium">No memories found in this category.</span>
+                  <span className="text-xs mt-1">Lyra will remember as you interact more.</span>
                 </motion.div>
-              ))}
+              ) : (
+                filteredMemories.map((memory) => (
+                  <motion.div
+                    key={memory.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="mb-3"
+                  >
+                    <div className={`rounded-lg p-3 shadow-md border border-white/40 backdrop-blur-md ${categoryColors[memory.category]}`}>
+                      <div className="text-sm font-medium flex items-center gap-2">
+                        {memory.category === 'context' && <span className="inline-block w-2 h-2 bg-blue-500 rounded-full animate-pulse" />}
+                        {memory.category === 'preference' && <span className="inline-block w-2 h-2 bg-purple-500 rounded-full animate-pulse" />}
+                        {memory.category === 'fact' && <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
+                        {memory.content}
+                      </div>
+                      <div className="text-xs opacity-60 mt-1">
+                        {new Intl.DateTimeFormat('en', { 
+                          hour: 'numeric', 
+                          minute: 'numeric',
+                          hour12: true 
+                        }).format(memory.timestamp)}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
             </AnimatePresence>
           </div>
 
           <div className="p-4 border-t border-deepred/20">
             <button 
-              className="w-full py-2 px-4 bg-deepred/10 text-deepred rounded-lg text-sm 
-                hover:bg-deepred/20 transition-colors"
+              className="w-full py-2 px-4 bg-deepred/10 text-deepred rounded-lg text-sm font-semibold hover:bg-deepred/20 transition-colors shadow-sm"
             >
               Clear Memory
             </button>
@@ -138,38 +160,96 @@ const RightPanel: React.FC = () => {
       ) : (
         <div className="flex-1 overflow-y-auto p-4">
           <div className="mb-6">
-            <h3 className="text-md font-medium mb-3">Theme Settings</h3>
+            <h3 className="text-md font-medium mb-3 flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-tr from-deepred/80 to-pink-400 text-white shadow-md">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.343 17.657l-1.414 1.414m12.728 0l-1.414-1.414M6.343 6.343L4.929 4.929" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </span>
+              Theme Settings
+            </h3>
             <ThemeSwitcher />
           </div>
           
           <div className="mb-6">
-            <h3 className="text-md font-medium mb-3">Lyra Avatar Settings</h3>
-            <div className="flex flex-col space-y-2">
+            <h3 className="text-md font-medium mb-3 flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-tr from-blue-500/80 to-cyan-400 text-white shadow-md">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </span>
+              Lyra Avatar Settings
+            </h3>
+            <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm">Show emotions</label>
-                <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-500 focus:ring-blue-400" />
+                <label className="text-sm flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-gradient-to-tr from-pink-400 to-deepred/80 rounded-full mr-1" />
+                  Show emotions
+                </label>
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
+                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-deepred/40"
+                >
+                  <span className="sr-only">Toggle emotions</span>
+                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-pink-400 to-deepred/80 shadow transition-transform duration-200 translate-x-0" />
+                </motion.button>
               </div>
               <div className="flex items-center justify-between">
-                <label className="text-sm">Animation speed</label>
-                <select className="text-sm bg-gray-100 rounded-md p-1">
-                  <option>Fast</option>
-                  <option selected>Normal</option>
-                  <option>Slow</option>
-                </select>
+                <label className="text-sm flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-gradient-to-tr from-blue-400 to-cyan-400 rounded-full mr-1" />
+                  Animation speed
+                </label>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative w-32"
+                >
+                  <input
+                    type="range"
+                    min="1"
+                    max="3"
+                    defaultValue="2"
+                    className="w-full accent-blue-500 rounded-lg overflow-hidden bg-gray-200 h-2 appearance-none"
+                  />
+                  <div className="flex justify-between text-xs mt-1 text-charcoal/50">
+                    <span>Fast</span>
+                    <span>Normal</span>
+                    <span>Slow</span>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </div>
 
           <div className="mb-6">
-            <h3 className="text-md font-medium mb-3">Interface Settings</h3>
-            <div className="flex flex-col space-y-2">
+            <h3 className="text-md font-medium mb-3 flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-tr from-green-500/80 to-lime-400 text-white shadow-md">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </span>
+              Interface Settings
+            </h3>
+            <div className="flex flex-col space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm">Enable animations</label>
-                <input type="checkbox" defaultChecked className="h-4 w-4 text-blue-500 focus:ring-blue-400" />
+                <label className="text-sm flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-gradient-to-tr from-green-400 to-lime-400 rounded-full mr-1" />
+                  Enable animations
+                </label>
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
+                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400/40"
+                >
+                  <span className="sr-only">Toggle animations</span>
+                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-green-400 to-lime-400 shadow transition-transform duration-200 translate-x-0" />
+                </motion.button>
               </div>
               <div className="flex items-center justify-between">
-                <label className="text-sm">Compact mode</label>
-                <input type="checkbox" className="h-4 w-4 text-blue-500 focus:ring-blue-400" />
+                <label className="text-sm flex items-center gap-2">
+                  <span className="inline-block w-4 h-4 bg-gradient-to-tr from-gray-400 to-charcoal/60 rounded-full mr-1" />
+                  Compact mode
+                </label>
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
+                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-charcoal/40"
+                >
+                  <span className="sr-only">Toggle compact mode</span>
+                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-gray-400 to-charcoal/60 shadow transition-transform duration-200 translate-x-0" />
+                </motion.button>
               </div>
             </div>
           </div>
