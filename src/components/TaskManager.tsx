@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Glass from './Glass';
 import LyraAvatar from './LyraAvatar';
+import Modal from './Modal';
 
 interface Task {
   id: string;
@@ -167,6 +168,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
             {/* Column header */}
             <div className="flex items-center gap-2 mb-3 px-2">
               <span className="text-xl">{statusHeaders[status].icon}</span>
+              <LyraAvatar emotion="balanced" showNameTag={false} size={28} />
               <h2 className="font-medium">{statusHeaders[status].label}</h2>
               <span className="ml-auto bg-charcoal/10 dark:bg-offwhite/10 text-xs px-2 py-0.5 rounded-full">
                 {tasksByStatus[status].length}
@@ -187,12 +189,9 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
                     <Glass
                       hover
                       className="overflow-hidden"
-                      style={{
-                        borderLeft: `4px solid ${getUrgencyColor(task)}`,
-                      }}
                       onClick={() => setActiveTask(activeTask === task.id ? null : task.id)}
                     >
-                      <div className="p-3">
+                      <div className="p-3" style={{ borderLeft: `4px solid ${getUrgencyColor(task)}` }}>
                         <div className="flex items-center justify-between mb-2">
                           <div 
                             className={`w-2 h-2 rounded-full ${priorityConfig[task.priority].color}`}
