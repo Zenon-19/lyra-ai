@@ -4,21 +4,30 @@ import Sidebar from './components/Sidebar';
 import MainChat from './components/MainChat';
 import RightPanel from './components/RightPanel';
 import Modal from './components/Modal';
+import Dashboard from './components/Dashboard';
+import Memory from './components/Memory';
 import { useChatStore } from './store/chatStore';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import useThemeKeyboardShortcuts from './hooks/useThemeKeyboardShortcuts';
 
 const AppContent = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [currentView, setCurrentView] = useState<'dashboard' | 'chat' | 'memory'>('dashboard');
   const { loadMessages, clearHistory } = useChatStore();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
+  
+  // Initialize theme keyboard shortcuts
+  useThemeKeyboardShortcuts();
 
   const shortcuts = useKeyboardShortcuts([
     { key: 'k', ctrlKey: true, action: () => setShowShortcuts(true), description: 'Show keyboard shortcuts' },
     { key: ',', ctrlKey: true, action: () => setShowSettings(true), description: 'Open settings' },
-    { key: 'd', ctrlKey: true, action: toggleTheme, description: 'Toggle dark mode' },
     { key: 'l', ctrlKey: true, action: clearHistory, description: 'Clear chat history' },
+    { key: 'h', ctrlKey: true, action: () => setCurrentView('dashboard'), description: 'Go to dashboard' },
+    { key: 'c', ctrlKey: true, action: () => setCurrentView('chat'), description: 'Go to chat' },
+    { key: 'm', ctrlKey: true, action: () => setCurrentView('memory'), description: 'Go to memory' },
   ]);
   
   useEffect(() => {
@@ -26,18 +35,29 @@ const AppContent = () => {
   }, [loadMessages]);
 
   return (
-    <div className={`flex h-screen w-screen font-sans ${theme === 'dark' ? 'dark' : ''}`}>
-      <Sidebar />
+    <div className={`flex h-screen w-screen font-sans ${theme === 'dark' ? 'dark' : ''}`}
+         style={{ backgroundColor: 'var(--color-background)', color: 'var(--color-text)' }}>
+      <Sidebar onSelectView={(view) => setCurrentView(view)} currentView={currentView} />
       
       <div className="relative flex-1 flex flex-col">
+        <Header 
+          title={
+            currentView === 'dashboard' ? 'Dashboard' : 
+            currentView === 'chat' ? 'Chat' : 
+            currentView === 'memory' ? 'Memory' : 'Lyra'
+          }
+          onSettingsClick={() => setShowSettings(true)}
+        />
+        
+        {/* Hidden for now as we have header component */}
         <motion.div 
-          className="absolute top-4 left-24 md:left-72 z-10 flex gap-2"
+          className="hidden absolute top-4 left-24 md:left-72 z-10 flex gap-2"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <button
-            className="bg-deepred text-offwhite rounded px-3 py-1 text-xs shadow 
-              hover:bg-charcoal transition-colors flex items-center gap-2"
+            className="bg-crimson text-offwhite rounded-lg px-4 py-1.5 text-xs shadow-md 
+              hover:shadow-lg transition-all flex items-center gap-2"
             onClick={() => setShowSettings(true)}
             title="Settings (Ctrl+,)"
           >
@@ -45,76 +65,101 @@ const AppContent = () => {
             Settings
           </button>
           <button
-            className="bg-charcoal/10 rounded px-3 py-1 text-xs shadow 
-              hover:bg-charcoal/20 transition-colors flex items-center gap-2"
+            className="bg-charcoal/10 dark:bg-offwhite/10 rounded-lg px-4 py-1.5 text-xs shadow-md 
+              hover:bg-charcoal/20 dark:hover:bg-offwhite/20 transition-all flex items-center gap-2"
             onClick={toggleTheme}
             title="Toggle theme (Ctrl+D)"
           >
-            {theme === 'dark' ? '🌞' : '🌙'}
-          </button>
-          <button
-            className="bg-charcoal/10 rounded px-3 py-1 text-xs shadow 
-              hover:bg-charcoal/20 transition-colors flex items-center gap-2"
-            onClick={() => setShowShortcuts(true)}
-            title="Keyboard shortcuts (Ctrl+K)"
-          >
-            ⌨️
+            <span>{theme === 'light' ? '🌙' : theme === 'dark' ? '☀️' : '🧘'}</span>
+            {theme.charAt(0).toUpperCase() + theme.slice(1)} Mode
           </button>
         </motion.div>
-
-        <MainChat />
+        
+        <AnimatePresence mode="wait">
+          {currentView === 'dashboard' ? (
+            <motion.div
+              key="dashboard"
+              className="flex-1 overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Dashboard username="User" />
+            </motion.div>
+          ) : currentView === 'chat' ? (
+            <motion.div
+              key="chat"
+              className="flex-1 flex overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MainChat />
+              <RightPanel />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="memory"
+              className="flex-1 overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Memory />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <RightPanel />
-
-      <AnimatePresence>
-        {showSettings && (
-          <Modal open={true} onClose={() => setShowSettings(false)} title="Settings">
-            <div className="space-y-4">
-              <div className="flex flex-col gap-4">
-                <label className="flex items-center justify-between">
-                  <span>Theme</span>
-                  <button
-                    onClick={toggleTheme}
-                    className="bg-charcoal/10 rounded-full p-2 hover:bg-charcoal/20 transition-colors"
-                    title="Toggle theme (Ctrl+D)"
-                  >
-                    {theme === 'dark' ? '🌞' : '🌙'}
-                  </button>
-                </label>
-                <label className="flex items-center justify-between">
-                  <span>Notifications</span>
-                  <input type="checkbox" className="rounded text-deepred" />
-                </label>
+      {/* Settings Modal */}
+      <Modal open={showSettings} onClose={() => setShowSettings(false)} title="Settings">
+        <div className="p-4 space-y-6">
+          <div>
+            <h3 className="font-medium text-lg mb-3">Appearance</h3>
+            <div className="flex gap-3">
+              {(['light', 'dark', 'zen'] as const).map((themeOption) => (
                 <button
-                  className="bg-deepred text-offwhite px-3 py-1 rounded hover:bg-charcoal 
-                    transition-colors mt-4"
-                  onClick={() => {
-                    clearHistory();
-                    setShowSettings(false);
-                  }}
-                  title="Clear history (Ctrl+L)"
+                  key={themeOption}
+                  className={`px-4 py-2 rounded-lg border transition-all ${
+                    theme === themeOption 
+                      ? 'border-crimson bg-crimson/10 text-crimson' 
+                      : 'border-charcoal/20 hover:border-charcoal/50'
+                  }`}
+                  onClick={() => setTheme(themeOption)}
                 >
-                  Clear Chat History
+                  {themeOption === 'light' ? '☀️' : themeOption === 'dark' ? '🌙' : '🧘'} 
+                  {themeOption.charAt(0).toUpperCase() + themeOption.slice(1)}
                 </button>
-              </div>
-            </div>
-          </Modal>
-        )}
-
-        {showShortcuts && (
-          <Modal open={true} onClose={() => setShowShortcuts(false)} title="Keyboard Shortcuts">
-            <div className="space-y-4">
-              {shortcuts.map(({ key, description }) => (
-                <div key={key} className="flex justify-between items-center">
-                  <span className="text-sm">{description}</span>
-                  <kbd className="px-2 py-1 bg-charcoal/10 rounded text-xs font-mono">{key}</kbd>
-                </div>
               ))}
             </div>
-          </Modal>
-        )}
-      </AnimatePresence>
+          </div>
+          
+          <div>
+            <h3 className="font-medium text-lg mb-3">Account</h3>
+            {/* Account settings would go here */}
+            <p className="text-charcoal/60 dark:text-offwhite/60 italic">Coming soon</p>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Keyboard Shortcuts Modal */}
+      <Modal open={showShortcuts} onClose={() => setShowShortcuts(false)} title="Keyboard Shortcuts">
+        <div className="p-4">
+          <dl className="space-y-2">
+            {shortcuts.map((shortcut, i) => (
+              <div key={i} className="flex justify-between py-2 border-b border-charcoal/10 last:border-0">
+                <dt className="font-mono bg-charcoal/10 dark:bg-offwhite/10 px-2 rounded">
+                  {shortcut.key}
+                </dt>
+                <dd className="text-charcoal/70 dark:text-offwhite/70">{shortcut.description}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </Modal>
     </div>
   );
 };
