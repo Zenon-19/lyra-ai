@@ -5,8 +5,8 @@ import LyraAvatar from './LyraAvatar';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface SidebarProps {
-  currentView?: 'dashboard' | 'chat' | 'memory';
-  onSelectView?: (view: 'dashboard' | 'chat' | 'memory') => void;
+  currentView?: 'dashboard' | 'chat' | 'memory' | 'personality' | 'skills';
+  onSelectView?: (view: 'dashboard' | 'chat' | 'memory' | 'personality' | 'skills') => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ 
@@ -94,8 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </>
             )}
           </button>
-          
-          <button
+            <button
             onClick={() => onSelectView('memory')}
             className={`w-full text-left p-3 rounded-lg transition-all flex items-center gap-3
               ${currentView === 'memory' 
@@ -108,6 +107,40 @@ const Sidebar: React.FC<SidebarProps> = ({
               <>
                 <span className="text-xl">🧠</span>
                 <span>Memory</span>
+              </>
+            )}
+          </button>
+          
+          <button
+            onClick={() => onSelectView('personality')}
+            className={`w-full text-left p-3 rounded-lg transition-all flex items-center gap-3
+              ${currentView === 'personality' 
+                ? 'bg-crimson/30 shadow-md' 
+                : 'hover:bg-crimson/20'}`}
+          >
+            {!isExpanded ? (
+              <span className="text-xl">😊</span>
+            ) : (
+              <>
+                <span className="text-xl">😊</span>
+                <span>Personality</span>
+              </>
+            )}
+          </button>
+          
+          <button
+            onClick={() => onSelectView('skills')}
+            className={`w-full text-left p-3 rounded-lg transition-all flex items-center gap-3
+              ${currentView === 'skills' 
+                ? 'bg-crimson/30 shadow-md' 
+                : 'hover:bg-crimson/20'}`}
+          >
+            {!isExpanded ? (
+              <span className="text-xl">⚡</span>
+            ) : (
+              <>
+                <span className="text-xl">⚡</span>
+                <span>Skills</span>
               </>
             )}
           </button>

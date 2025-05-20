@@ -13,16 +13,16 @@ interface LyraAvatarProps {
 
 const moodColors = {
   neutral: 'var(--color-charcoal)',
-  happy: 'var(--color-crimson)',
-  thinking: 'var(--color-stealth-blue)',
-  concerned: 'var(--color-accent)',
+  happy: 'var(--color-coral)',
+  thinking: 'var(--color-dusty-rose)',
+  concerned: 'var(--color-tiger-lily)',
 };
 
 const moodGradients = {
   neutral: 'linear-gradient(135deg, rgba(31, 31, 31, 0.9), rgba(31, 31, 31, 0.7))',
-  happy: 'linear-gradient(135deg, rgba(217, 59, 59, 0.9), rgba(217, 59, 59, 0.7))',
-  thinking: 'linear-gradient(135deg, rgba(0, 122, 255, 0.9), rgba(0, 122, 255, 0.7))',
-  concerned: 'linear-gradient(135deg, rgba(255, 149, 0, 0.9), rgba(255, 149, 0, 0.7))',
+  happy: 'linear-gradient(135deg, rgba(222, 132, 123, 0.9), rgba(222, 132, 123, 0.7))',
+  thinking: 'linear-gradient(135deg, rgba(222, 179, 173, 0.9), rgba(222, 179, 173, 0.7))',
+  concerned: 'linear-gradient(135deg, rgba(185, 92, 80, 0.9), rgba(185, 92, 80, 0.7))',
 };
 
 const sizes = {
@@ -137,27 +137,26 @@ const LyraAvatar: React.FC<LyraAvatarProps> = ({
           repeatType: "reverse",
         }}
       />
-      
-      {size === 'large' && (
+        {size === 'large' && (
         <>
           {/* Eyes */}
           <motion.div 
-            className="absolute flex gap-2 sm:gap-3"
+            className="absolute flex gap-4"
             style={{ 
-              top: '35%',
+              top: '40%',
               left: '50%',
               transform: 'translateX(-50%)'
             }}
           >
             <motion.div 
               className="bg-white rounded-full"
-              style={{ width: '8px', height: '8px' }}
+              style={{ width: '12px', height: '12px' }}
               animate={eyesVariants[mood]}
               transition={{ duration: 0.1 }}
             />
             <motion.div 
               className="bg-white rounded-full"
-              style={{ width: '8px', height: '8px' }}
+              style={{ width: '12px', height: '12px' }}
               animate={eyesVariants[mood]}
               transition={{ duration: 0.1 }}
             />
@@ -178,7 +177,25 @@ const LyraAvatar: React.FC<LyraAvatarProps> = ({
       )}
       
       {size !== 'large' && (
-        <span className={`text-offwhite ${fontSizes[size]} font-bold`}>L</span>
+        <>
+          {/* Small version with just eyes */}
+          <motion.div 
+            className="absolute flex items-center justify-center gap-1 w-full"
+          >
+            <motion.div 
+              className="bg-white rounded-full"
+              style={{ width: size === 'small' ? '3px' : '5px', height: size === 'small' ? '3px' : '5px' }}
+              animate={eyesVariants[mood]}
+              transition={{ duration: 0.1 }}
+            />
+            <motion.div 
+              className="bg-white rounded-full"
+              style={{ width: size === 'small' ? '3px' : '5px', height: size === 'small' ? '3px' : '5px' }}
+              animate={eyesVariants[mood]}
+              transition={{ duration: 0.1 }}
+            />
+          </motion.div>
+        </>
       )}
     </motion.div>
   );

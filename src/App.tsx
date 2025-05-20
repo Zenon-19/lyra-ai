@@ -6,6 +6,9 @@ import RightPanel from './components/RightPanel';
 import Modal from './components/Modal';
 import Dashboard from './components/Dashboard';
 import Memory from './components/Memory';
+import Header from './components/Header';
+import Personality from './components/Personality';
+import Skills from './components/Skills';
 import { useChatStore } from './store/chatStore';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -14,9 +17,9 @@ import useThemeKeyboardShortcuts from './hooks/useThemeKeyboardShortcuts';
 const AppContent = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'chat' | 'memory'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'chat' | 'memory' | 'personality' | 'skills'>('dashboard');
   const { loadMessages, clearHistory } = useChatStore();
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
   
   // Initialize theme keyboard shortcuts
   useThemeKeyboardShortcuts();
@@ -47,6 +50,7 @@ const AppContent = () => {
             currentView === 'memory' ? 'Memory' : 'Lyra'
           }
           onSettingsClick={() => setShowSettings(true)}
+          onThemeToggle={() => {}} // Let the Header's internal theme toggle work
         />
         
         {/* Hidden for now as we have header component */}
@@ -67,8 +71,7 @@ const AppContent = () => {
           <button
             className="bg-charcoal/10 dark:bg-offwhite/10 rounded-lg px-4 py-1.5 text-xs shadow-md 
               hover:bg-charcoal/20 dark:hover:bg-offwhite/20 transition-all flex items-center gap-2"
-            onClick={toggleTheme}
-            title="Toggle theme (Ctrl+D)"
+            title="Theme toggle"
           >
             <span>{theme === 'light' ? '🌙' : theme === 'dark' ? '☀️' : '🧘'}</span>
             {theme.charAt(0).toUpperCase() + theme.slice(1)} Mode
@@ -99,7 +102,7 @@ const AppContent = () => {
               <MainChat />
               <RightPanel />
             </motion.div>
-          ) : (
+          ) : currentView === 'memory' ? (
             <motion.div
               key="memory"
               className="flex-1 overflow-hidden"
@@ -109,6 +112,39 @@ const AppContent = () => {
               transition={{ duration: 0.3 }}
             >
               <Memory />
+            </motion.div>
+          ) : currentView === 'personality' ? (
+            <motion.div
+              key="personality"
+              className="flex-1 overflow-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Personality />
+            </motion.div>
+          ) : currentView === 'skills' ? (
+            <motion.div
+              key="skills"
+              className="flex-1 overflow-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Skills />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="default"
+              className="flex-1 overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Dashboard username="User" />
             </motion.div>
           )}
         </AnimatePresence>
