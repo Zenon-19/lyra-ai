@@ -6,13 +6,11 @@ import LyraAvatar from './LyraAvatar';
 interface HeaderProps {
   title?: string;
   onThemeToggle?: () => void;
-  onSettingsClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   title = 'Lyra',
-  onThemeToggle,
-  onSettingsClick
+  onThemeToggle
 }) => {
   const { theme, toggleTheme } = useTheme();
   
@@ -57,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="flex justify-between items-center py-2 px-4 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden">
-          <LyraAvatar size="small" mood="neutral" />
+          <LyraAvatar emotion="balanced" animated={false} showNameTag={false} size={40} />
         </div>
         <h1 className="text-xl font-medium">{title}</h1>
       </div>

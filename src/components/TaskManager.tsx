@@ -148,7 +148,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
         <div>
           <h1 className="text-2xl font-bold">Task Manager</h1>
           <p className="text-charcoal/60 dark:text-offwhite/60">
-            Track your tasks and stay productive
+            Let's organize your work and boost productivity
           </p>
         </div>
         
@@ -223,10 +223,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
                               {status !== 'todo' && (
                                 <button 
                                   className="px-2 py-1 bg-charcoal/10 dark:bg-offwhite/10 rounded text-xs"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleStatusChange(task.id, 'todo');
-                                  }}
+                                  onClick={e => { e.stopPropagation(); handleStatusChange(task.id, 'todo'); }}
                                 >
                                   Move to To Do
                                 </button>
@@ -235,10 +232,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
                               {status !== 'inProgress' && (
                                 <button 
                                   className="px-2 py-1 bg-charcoal/10 dark:bg-offwhite/10 rounded text-xs"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleStatusChange(task.id, 'inProgress');
-                                  }}
+                                  onClick={e => { e.stopPropagation(); handleStatusChange(task.id, 'inProgress'); }}
                                 >
                                   Move to In Progress
                                 </button>
@@ -247,10 +241,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
                               {status !== 'done' && (
                                 <button 
                                   className="px-2 py-1 bg-charcoal/10 dark:bg-offwhite/10 rounded text-xs"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleStatusChange(task.id, 'done');
-                                  }}
+                                  onClick={e => { e.stopPropagation(); handleStatusChange(task.id, 'done'); }}
                                 >
                                   Move to Done
                                 </button>
@@ -258,10 +249,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
                               
                               <button 
                                 className="px-2 py-1 bg-crimson/10 text-crimson rounded text-xs ml-auto"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteTask(task.id);
-                                }}
+                                onClick={e => { e.stopPropagation(); handleDeleteTask(task.id); }}
                               >
                                 Delete
                               </button>
@@ -277,7 +265,7 @@ const TaskManager: React.FC<TaskManagerProps> = ({ initialTasks = [] }) => {
               {/* Empty state */}
               {tasksByStatus[status].length === 0 && (
                 <div className="h-32 flex items-center justify-center text-charcoal/40 dark:text-offwhite/40 text-sm italic">
-                  No tasks yet
+                  <span className="text-3xl mr-2">🦄</span> No tasks yet
                 </div>
               )}
             </div>

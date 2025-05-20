@@ -90,7 +90,7 @@ const Dashboard: React.FC<DashboardProps> = ({ username = "Friend" }) => {
         className="flex items-center mb-8"
       >
         <div className="mr-4">
-          <LyraAvatar mood={mood} size="large" />
+          <LyraAvatar emotion="balanced" animated={true} showNameTag={true} size={96} />
         </div>
         <div>
           <h1 className="text-3xl font-bold text-charcoal dark:text-offwhite">

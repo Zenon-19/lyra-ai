@@ -47,9 +47,10 @@ const AppContent = () => {
           title={
             currentView === 'dashboard' ? 'Dashboard' : 
             currentView === 'chat' ? 'Chat' : 
-            currentView === 'memory' ? 'Memory' : 'Lyra'
+            currentView === 'memory' ? 'Memory' : 
+            currentView === 'personality' ? 'Personality' :
+            currentView === 'skills' ? 'Skills' : 'Lyra'
           }
-          onSettingsClick={() => setShowSettings(true)}
           onThemeToggle={() => {}} // Let the Header's internal theme toggle work
         />
         

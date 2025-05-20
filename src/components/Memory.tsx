@@ -289,9 +289,8 @@ const Memory: React.FC<MemoryProps> = ({ initialMemories = [] }) => {
             className="fixed inset-x-0 bottom-0 p-4 bg-offwhite/95 dark:bg-charcoal/95 backdrop-blur-md border-t border-charcoal/10 dark:border-offwhite/10 z-10"
           >
             <div className="max-w-3xl mx-auto">
-              <div className="mb-3 flex justify-between">
-                <div className="flex items-center gap-2">
-                  <LyraAvatar size="small" mood="thinking" />
+              <div className="mb-3 flex justify-between">                <div className="flex items-center gap-2">
+                  <LyraAvatar emotion="thoughtful" animated={false} showNameTag={false} size={32} />
                   <h3 className="text-lg font-medium">Editing Memory</h3>
                 </div>
                 

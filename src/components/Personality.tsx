@@ -56,14 +56,13 @@ const Personality: React.FC = () => {
         {/* Left side - Avatar preview */}
         <div className="flex-1">
           <h2 className="text-xl font-semibold mb-6">Avatar Preview</h2>
-          <div className="flex flex-col items-center">
-            <div className="mb-6">
-              <LyraAvatar 
-                size="large" 
-                mood={selectedExpression === 'balanced' ? 'neutral' : 
-                      selectedExpression === 'cheerful' ? 'happy' :
-                      selectedExpression === 'thoughtful' ? 'thinking' : 'concerned'} 
-                interactive={true}
+          <div className="flex flex-col items-center">            <div className="mb-6">              <LyraAvatar 
+                size={96}
+                emotion={selectedExpression === 'balanced' ? 'balanced' : 
+                      selectedExpression === 'cheerful' ? 'cheerful' :
+                      selectedExpression === 'thoughtful' ? 'thoughtful' : 'curious'} 
+                animated={true}
+                showNameTag={true}
               />
             </div>
             <p className="text-center text-gray-600 dark:text-gray-300 mb-4">
@@ -124,14 +123,13 @@ const Personality: React.FC = () => {
                 className={`p-2 rounded-full cursor-pointer flex items-center justify-center
                   ${selectedExpression === expression 
                     ? 'bg-dusty-rose text-white shadow-md' 
-                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}`}
-              >
-                <LyraAvatar 
-                  size="small" 
-                  mood={expression === 'balanced' ? 'neutral' : 
-                        expression === 'cheerful' ? 'happy' :
-                        expression === 'thoughtful' ? 'thinking' : 'concerned'} 
-                  interactive={false}
+                    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'}`}              >                <LyraAvatar 
+                  size={32}
+                  emotion={expression === 'balanced' ? 'balanced' : 
+                        expression === 'cheerful' ? 'cheerful' :
+                        expression === 'thoughtful' ? 'thoughtful' : 'curious'} 
+                  animated={false}
+                  showNameTag={false}
                 />
                 <span className="ml-2 text-xs capitalize">{expression}</span>
               </motion.div>

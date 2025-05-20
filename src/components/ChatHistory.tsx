@@ -46,14 +46,14 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
           variants={messageVariants}
           transition={{ duration: 0.3, delay: i === messages.length - 1 ? 0 : 0 }}
           className={`relative flex items-end gap-2 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
-        >
-          {msg.sender === 'lyra' && (
-            <div className="mb-1">
-              <LyraAvatar 
-                size="sm" 
-                mood={msg.content.includes('😊') ? 'happy' : 
-                      msg.content.includes('🤔') ? 'thinking' : 
-                      msg.content.includes('😟') ? 'concerned' : 'neutral'} 
+        >          {msg.sender === 'lyra' && (
+            <div className="mb-1">              <LyraAvatar 
+                size={30}
+                emotion={msg.content.includes('😊') ? 'cheerful' : 
+                      msg.content.includes('🤔') ? 'thoughtful' : 
+                      msg.content.includes('😟') ? 'curious' : 'balanced'}
+                animated={false}
+                showNameTag={false}
               />
             </div>
           )}
