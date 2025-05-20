@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeSwitcher from './ThemeSwitcher';
+import LyraAvatar from './LyraAvatar';
 
 interface MemoryItem {
   id: string;
@@ -14,6 +15,10 @@ const RightPanel: React.FC = () => {
   const [showPanel, setShowPanel] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'context' | 'preference' | 'fact'>('all');
   const [activeTab, setActiveTab] = useState<'memory' | 'settings'>('memory');
+  const [showEmotions, setShowEmotions] = useState(true);
+  const [animationSpeed, setAnimationSpeed] = useState(2);
+  const [enableAnimations, setEnableAnimations] = useState(true);
+  const [compactMode, setCompactMode] = useState(false);
   
   // Example memory items
   const memories: MemoryItem[] = [
@@ -79,6 +84,16 @@ const RightPanel: React.FC = () => {
             </button>
           </div>
         </div>
+        {/* Lyra Avatar Preview */}
+        <div className="flex justify-center mt-4">
+          <LyraAvatar 
+            emotion={activeTab === 'memory' ? 'balanced' : 'cheerful'} 
+            animated={enableAnimations} 
+            showNameTag={true} 
+            accessibilityMode={!enableAnimations} 
+            size={96}
+          />
+        </div>
       </div>
 
       {activeTab === 'memory' ? (
@@ -86,12 +101,14 @@ const RightPanel: React.FC = () => {
           <div className="p-4 border-b border-deepred/20">
             <div className="flex gap-2">
               {(['all', 'context', 'preference', 'fact'] as const).map((category) => (
-                <button
+                <motion.button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.08 }}
                   className={`px-3 py-1 rounded-full text-sm capitalize transition-colors font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-deepred/40 focus:ring-offset-2 duration-150 ${
                     selectedCategory === category 
-                      ? 'bg-deepred text-offwhite scale-105 shadow-md' 
+                      ? 'bg-gradient-to-tr from-deepred to-pink-400 text-offwhite scale-105 shadow-lg' 
                       : 'bg-charcoal/5 text-charcoal/60 hover:bg-charcoal/10'
                   }`}
                 >
@@ -101,7 +118,7 @@ const RightPanel: React.FC = () => {
                     {category === 'fact' && <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse" />}
                     {category}
                   </span>
-                </button>
+                </motion.button>
               ))}
             </div>
           </div>
@@ -150,11 +167,13 @@ const RightPanel: React.FC = () => {
           </div>
 
           <div className="p-4 border-t border-deepred/20">
-            <button 
-              className="w-full py-2 px-4 bg-deepred/10 text-deepred rounded-lg text-sm font-semibold hover:bg-deepred/20 transition-colors shadow-sm"
+            <motion.button 
+              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              className="w-full py-2 px-4 bg-deepred/10 text-deepred rounded-lg text-sm font-semibold hover:bg-deepred/20 transition-colors shadow-sm flex items-center justify-center gap-2"
             >
-              Clear Memory
-            </button>
+              <span className="text-lg">🧹</span> Clear Memory
+            </motion.button>
           </div>
         </>
       ) : (
@@ -184,10 +203,16 @@ const RightPanel: React.FC = () => {
                 </label>
                 <motion.button
                   whileTap={{ scale: 0.85 }}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-deepred/40"
+                  animate={{ background: showEmotions ? 'linear-gradient(to top right, #f472b6, #be123c)' : '#e5e7eb' }}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-deepred/40 ${showEmotions ? 'bg-gradient-to-tr from-pink-400 to-deepred/80' : 'bg-charcoal/10'}`}
+                  onClick={() => setShowEmotions(v => !v)}
                 >
                   <span className="sr-only">Toggle emotions</span>
-                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-pink-400 to-deepred/80 shadow transition-transform duration-200 translate-x-0" />
+                  <motion.span
+                    layout
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    className={`inline-block h-5 w-5 transform rounded-full shadow transition-transform duration-200 ${showEmotions ? 'bg-gradient-to-tr from-pink-400 to-deepred/80 translate-x-5' : 'bg-gray-300 translate-x-0'}`}
+                  />
                 </motion.button>
               </div>
               <div className="flex items-center justify-between">
@@ -204,14 +229,22 @@ const RightPanel: React.FC = () => {
                     type="range"
                     min="1"
                     max="3"
-                    defaultValue="2"
+                    value={animationSpeed}
+                    onChange={e => setAnimationSpeed(Number(e.target.value))}
                     className="w-full accent-blue-500 rounded-lg overflow-hidden bg-gray-200 h-2 appearance-none"
                   />
                   <div className="flex justify-between text-xs mt-1 text-charcoal/50">
-                    <span>Fast</span>
-                    <span>Normal</span>
-                    <span>Slow</span>
+                    <span className={animationSpeed === 1 ? 'font-bold text-blue-600' : ''}>Fast</span>
+                    <span className={animationSpeed === 2 ? 'font-bold text-blue-600' : ''}>Normal</span>
+                    <span className={animationSpeed === 3 ? 'font-bold text-blue-600' : ''}>Slow</span>
                   </div>
+                  <motion.div
+                    initial={false}
+                    animate={{ x: (animationSpeed - 1) * 48 }}
+                    className="absolute -top-6 left-0 text-xs font-semibold text-blue-600"
+                  >
+                    {animationSpeed === 1 ? 'Fast' : animationSpeed === 2 ? 'Normal' : 'Slow'}
+                  </motion.div>
                 </motion.div>
               </div>
             </div>
@@ -232,10 +265,16 @@ const RightPanel: React.FC = () => {
                 </label>
                 <motion.button
                   whileTap={{ scale: 0.85 }}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400/40"
+                  animate={{ background: enableAnimations ? 'linear-gradient(to top right, #4ade80, #a3e635)' : '#e5e7eb' }}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-400/40 ${enableAnimations ? 'bg-gradient-to-tr from-green-400 to-lime-400' : 'bg-charcoal/10'}`}
+                  onClick={() => setEnableAnimations(v => !v)}
                 >
                   <span className="sr-only">Toggle animations</span>
-                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-green-400 to-lime-400 shadow transition-transform duration-200 translate-x-0" />
+                  <motion.span
+                    layout
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    className={`inline-block h-5 w-5 transform rounded-full shadow transition-transform duration-200 ${enableAnimations ? 'bg-gradient-to-tr from-green-400 to-lime-400 translate-x-5' : 'bg-gray-300 translate-x-0'}`}
+                  />
                 </motion.button>
               </div>
               <div className="flex items-center justify-between">
@@ -245,10 +284,16 @@ const RightPanel: React.FC = () => {
                 </label>
                 <motion.button
                   whileTap={{ scale: 0.85 }}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full bg-charcoal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-charcoal/40"
+                  animate={{ background: compactMode ? 'linear-gradient(to top right, #a1a1aa, #334155)' : '#e5e7eb' }}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-charcoal/40 ${compactMode ? 'bg-gradient-to-tr from-gray-400 to-charcoal/60' : 'bg-charcoal/10'}`}
+                  onClick={() => setCompactMode(v => !v)}
                 >
                   <span className="sr-only">Toggle compact mode</span>
-                  <span className="inline-block h-5 w-5 transform rounded-full bg-gradient-to-tr from-gray-400 to-charcoal/60 shadow transition-transform duration-200 translate-x-0" />
+                  <motion.span
+                    layout
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    className={`inline-block h-5 w-5 transform rounded-full shadow transition-transform duration-200 ${compactMode ? 'bg-gradient-to-tr from-gray-400 to-charcoal/60 translate-x-5' : 'bg-gray-300 translate-x-0'}`}
+                  />
                 </motion.button>
               </div>
             </div>
