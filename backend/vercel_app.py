@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from typing import Dict, Any
 from datetime import datetime
 import os
+import uuid
 
 # Create a minimal FastAPI app specifically for Vercel
 app = FastAPI(
@@ -47,6 +48,43 @@ async def get_config():
     }
 
 
+# --- Conversation Memory Helper ---
+def get_recent_history(n=10):
+    # Return the last n user+lyra messages for context
+    return chat_history[-n*2:] if len(chat_history) > n*2 else chat_history[:]
+
+
+# --- AI Agent Logic (with context) ---
+def generate_lyra_response(user_message: str, history: list) -> str:
+    """
+    Simple AI agent logic for Lyra. Replace this with a real LLM call for production.
+    Uses recent conversation context for more continuity.
+    """
+    user_message_lower = user_message.lower().strip()
+    # Example: context-aware response
+    if not user_message_lower:
+        return "I'm here! How can I help you today?"
+    if "hello" in user_message_lower or "hi" in user_message_lower:
+        return "Hello! 👋 How can I assist you today?"
+    if "dark mode" in user_message_lower:
+        return "Switching to dark mode! 🌙 (Try toggling your theme in the UI.)"
+    if "light mode" in user_message_lower:
+        return "Switching to light mode! ☀️ (Try toggling your theme in the UI.)"
+    if "help" in user_message_lower:
+        return "Of course! Please tell me what you need help with."
+    if "weather" in user_message_lower:
+        return "I can't check the weather yet, but I can help you with tasks, notes, and more!"
+    if "thank" in user_message_lower:
+        return "You're welcome! 😊"
+    # Use last user message for continuity
+    if len(history) > 2:
+        last_user = next((m for m in reversed(history[:-1]) if m['sender'] == 'user'), None)
+        if last_user and last_user['content'].strip().lower() == user_message_lower:
+            return "You just asked that! 😊 Anything else I can help with?"
+    # Fallback: echo with encouragement
+    return f"You said: **{user_message}**\n\nLet me know if you need anything else! 🤖"
+
+
 # Chat endpoints
 @app.post("/api/chat/message")
 async def create_chat_message(content: Dict[str, Any] = Body(...)):
@@ -58,17 +96,16 @@ async def create_chat_message(content: Dict[str, Any] = Body(...)):
         "content": user_content,
         "timestamp": datetime.now().isoformat()
     }
-    
     chat_history.append(user_message)
-    
-    # Generate a simple response
+
+    # Use the AI agent logic with recent context
+    lyra_content = generate_lyra_response(user_content, get_recent_history())
     lyra_response = {
         "id": str(uuid.uuid4()),
         "sender": "lyra",
-        "content": f"You said: **{user_content}**\n\nI can help you with that! 😊",
+        "content": lyra_content,
         "timestamp": datetime.now().isoformat()
     }
-    
     chat_history.append(lyra_response)
     return lyra_response
 

@@ -52,7 +52,6 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
                 emotion={msg.content.includes('😊') ? 'cheerful' : 
                       msg.content.includes('🤔') ? 'thoughtful' : 
                       msg.content.includes('😟') ? 'curious' : 'balanced'}
-                animated={false}
                 showNameTag={false}
               />
             </div>

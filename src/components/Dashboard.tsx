@@ -5,56 +5,27 @@ import { useTheme } from '../contexts/ThemeContext';
 import LyraAvatar from './LyraAvatar';
 
 interface DashboardProps {
-  username?: string;
+  onGetStarted?: () => void;
 }
 
-interface DashboardTile {
-  id: string;
-  title: string;
-  icon: string;
-  description: string;
-  color: string;
-  position: { x: number; y: number };
-}
+const personas = [
+  {
+    name: 'Violette, Data Analyst',
+    description: 'Analyzes complex data sets and provides data-driven recommendations.',
+    img: '/personas/female-analyst.jpg', // Use a realistic photo in public/personas/
+    bg: 'bg-persona-pink',
+  },
+  {
+    name: 'Marcus, VP Strategy',
+    description: 'Formulates long-term strategic plans and identifies growth opportunities.',
+    img: '/personas/male-vp.jpg', // Use a realistic photo in public/personas/
+    bg: 'bg-persona-blue',
+  },
+];
 
-const Dashboard: React.FC<DashboardProps> = ({ username = "Friend" }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onGetStarted }) => {
   const { theme } = useTheme();
   const [greeting, setGreeting] = useState('');
-  const [tiles, setTiles] = useState<DashboardTile[]>([
-    {
-      id: 'chat',
-      title: 'Chat',
-      icon: '💬',
-      description: 'Have a conversation with Lyra',
-      color: 'var(--color-crimson)',
-      position: { x: 0, y: 0 }
-    },
-    {
-      id: 'tasks',
-      title: 'Tasks',
-      icon: '✓',
-      description: 'Manage your tasks with Lyra',
-      color: 'var(--color-stealth-blue)',
-      position: { x: 0, y: 0 }
-    },
-    {
-      id: 'memory',
-      title: 'Memory',
-      icon: '🧠',
-      description: 'View and edit Lyra\'s memory',
-      color: 'var(--color-accent)',
-      position: { x: 0, y: 0 }
-    },
-    {
-      id: 'settings',
-      title: 'Settings',
-      icon: '⚙️',
-      description: 'Customize Lyra',
-      color: '#6B6B6B',
-      position: { x: 0, y: 0 }
-    }
-  ]);
-  const [mood, setMood] = useState<'neutral' | 'happy' | 'thinking'>('neutral');
 
   // Set appropriate greeting based on time of day
   useEffect(() => {
@@ -62,79 +33,82 @@ const Dashboard: React.FC<DashboardProps> = ({ username = "Friend" }) => {
     if (hour < 12) setGreeting('Good morning');
     else if (hour < 18) setGreeting('Good afternoon');
     else setGreeting('Good evening');
-
-    // Change Lyra's mood randomly for demo
-    const interval = setInterval(() => {
-      const moods: ('neutral' | 'happy' | 'thinking')[] = ['neutral', 'happy', 'thinking'];
-      setMood(moods[Math.floor(Math.random() * moods.length)]);
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, []);
 
-  // Handle tile drag
-  const onDragEnd = (id: string, info: { point: { x: number, y: number } }) => {
-    setTiles(prevTiles => 
-      prevTiles.map(tile => 
-        tile.id === id ? { ...tile, position: { x: info.point.x, y: info.point.y } } : tile
-      )
-    );
-  };
-
   return (
-    <div className="p-6 h-full">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center mb-8"
-      >
-        <div className="mr-4">
-          <LyraAvatar emotion="balanced" animated={true} showNameTag={true} size={96} />
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Header/Nav */}
+      <header className="flex items-center justify-between px-8 py-4 border-b border-gray-200 bg-white sticky top-0 z-20">
+        <div className="flex items-center gap-3">
+          <img src="/lyra-logo.png" alt="Lyra Logo" className="h-10 w-10" />
+          <span className="font-bold text-2xl tracking-tight">LYRA</span>
         </div>
-        <div>
-          <h1 className="text-3xl font-bold text-charcoal dark:text-offwhite">
-            {greeting}, <span className="text-crimson">{username}</span>!
-          </h1>
-          <p className="text-charcoal/70 dark:text-offwhite/70">
-            What would you like to do today?
-          </p>
-        </div>
-      </motion.div>
+        <nav className="hidden md:flex gap-8 font-medium text-base">
+          <a href="#platform" className="hover:text-accent">Platform</a>
+          <a href="#features" className="hover:text-accent">Features</a>
+          <a href="#memory" className="hover:text-accent">Memory</a>
+          <a href="#voice" className="hover:text-accent">Voice</a>
+          <button onClick={onGetStarted} className="hover:text-accent bg-transparent border-none outline-none">Login</button>
+        </nav>
+        <button onClick={onGetStarted} className="cta px-6 py-3 font-bold text-lg">Get Started</button>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {tiles.map((tile) => (
-          <motion.div
-            key={tile.id}
-            className="glass-effect rounded-xl p-4 cursor-grab active:cursor-grabbing"
-            whileHover={{ scale: 1.02, boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)" }}
-            whileTap={{ scale: 0.98 }}
-            drag
-            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-            dragElastic={0.1}
-            dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
-            onDragEnd={(_, info) => onDragEnd(tile.id, info)}
-            style={{ 
-              x: tile.position.x, 
-              y: tile.position.y,
-              borderTop: `3px solid ${tile.color}` 
-            }}
-          >
-            <div className="flex items-start">
-              <div 
-                className="text-2xl p-3 rounded-full mr-3"
-                style={{ backgroundColor: `${tile.color}20` }}
-              >
-                {tile.icon}
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold">{tile.title}</h3>
-                <p className="text-sm text-charcoal/70 dark:text-offwhite/70">{tile.description}</p>
+      {/* AI Assistant Chat Bubble */}
+      <div className="absolute left-8 top-8 z-30 flex items-start gap-2">
+        <img src="/personas/female-analyst.jpg" alt="AI Assistant" className="w-12 h-12 rounded-full object-cover border-2 border-white shadow" />
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-white rounded-2xl shadow px-6 py-4 text-base font-medium text-primary max-w-xs border border-gray-100"
+        >
+          Hi, I'm Lyra, your AI assistant. How can I help you today?
+        </motion.div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="flex flex-col md:flex-row items-center justify-between flex-1 px-8 py-32 gap-12 relative">
+        <div className="flex-1 max-w-xl z-10">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+            Create Your Own <span className="text-accent">AI Personas</span>
+          </h1>
+          <p className="text-xl text-primary/80 mb-10">
+            Empower your workflow with AI-driven teammates. Lyra helps you automate, analyze, and strategize—streamlining your business and boosting productivity.
+          </p>
+          <button onClick={onGetStarted} className="cta px-8 py-4 text-lg font-bold rounded-2xl">Get Started</button>
+        </div>
+        <div className="flex flex-col gap-8 z-10">
+          {personas.map((p, i) => (
+            <div key={i} className={`flex items-center gap-4 p-6 rounded-2xl shadow-card ${p.bg} min-w-[320px] max-w-xs`}>
+              <img src={p.img} alt={p.name} className="w-20 h-20 rounded-2xl object-cover border-2 border-white shadow" />
+              <div className="text-left">
+                <div className="font-bold text-lg text-primary mb-1">{p.name}</div>
+                <div className="text-primary/70 text-base">{p.description}</div>
               </div>
             </div>
-          </motion.div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why Lyra Section */}
+      <section className="py-20 px-4 max-w-5xl mx-auto text-center" id="platform">
+        <h2 className="text-4xl font-bold mb-4">Why Lyra?</h2>
+        <p className="text-lg text-charcoal/70 mb-10">Lyra delivers unparalleled accuracy, transparency, and privacy, giving you complete data ownership and confidence in your network of AI personas.</p>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+          <img src="/screenshots/Screenshot 2025-05-21 142553.png" alt="Personal AI Screenshot" className="rounded-2xl shadow-lg max-w-[400px] border border-white/60" />
+          <img src="/screenshots/Screenshot 2025-05-21 142607.png" alt="Pi AI Screenshot" className="rounded-2xl shadow-lg max-w-[400px] border border-white/60" />
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-charcoal/60 text-sm border-t border-gray-200 bg-white/80 mt-12">
+        <div className="mb-2">&copy; {new Date().getFullYear()} Lyra. All rights reserved.</div>
+        <div className="flex justify-center gap-6">
+          <a href="#privacy" className="hover:text-crimson">Privacy</a>
+          <a href="#terms" className="hover:text-crimson">Terms</a>
+          <a href="#contact" className="hover:text-crimson">Contact</a>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -88,9 +88,7 @@ const RightPanel: React.FC = () => {
         <div className="flex justify-center mt-4">
           <LyraAvatar 
             emotion={activeTab === 'memory' ? 'balanced' : 'cheerful'} 
-            animated={enableAnimations} 
             showNameTag={true} 
-            accessibilityMode={!enableAnimations} 
             size={96}
           />
         </div>

@@ -17,11 +17,46 @@
   }
 
   body {
-    background-color: theme('colors.offwhite');
-    color: theme('colors.charcoal');
+    background: #F9FAFB;
+    color: #222222;
+    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
     overflow: hidden;
     margin: 0;
     min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #222222;
+    font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: #8AB9CE;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  button, .btn, .cta {
+    background: #000000;
+    color: #fff;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(34,34,34,0.04);
+  }
+  button:hover, .btn:hover, .cta:hover {
+    background: #222222;
+  }
+
+  input, textarea, select {
+    background: #fff;
+    border: 1px solid #E0E0E0;
+    border-radius: 0.75rem;
+    color: #222222;
   }
 
   /* Scrollbar styles */
@@ -53,6 +88,21 @@
     backdrop-filter: blur(8px);
     background-color: rgb(34 34 34 / 0.9);
   }
+
+  /* Remove gradients and add subtle borders for cards */
+  .card, .glass, .rounded-2xl, .bg-white\/70 {
+    background: #fff !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 1.25rem !important;
+    box-shadow: 0 4px 24px 0 rgba(138, 185, 206, 0.08);
+  }
+
+  .bg-persona-blue {
+    background: #C8E3F4 !important;
+  }
+  .bg-persona-pink {
+    background: #FBE5E5 !important;
+  }
 }
 
 /* Custom animations */
@@ -79,8 +129,8 @@
 
 /* Dark mode overrides */
 .dark {
-  background-color: theme('colors.charcoal');
-  color: theme('colors.offwhite');
+  background-color: #222222;
+  color: #F9FAFB;
 }
 
 .dark .glass-effect {

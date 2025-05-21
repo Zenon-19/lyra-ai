@@ -4,43 +4,70 @@ import React from 'react';
 export type LyraEmotion = "balanced" | "cheerful" | "thoughtful" | "curious";
 
 interface LyraAvatarProps {
-  emotion: LyraEmotion;
+  emotion?: LyraEmotion;
   showNameTag?: boolean;
-  size?: number;
+  size?: number | "sm" | "md" | "lg";
+  color?: string;
+  name?: string;
 }
 
 const emotionConfig = {
   balanced: {
-    bg: "#e3e6f9",
-    hair: "#bdb7e3",
-    accent: "#6b6b6b",
+    bg: "#e3f0ff",
+    hair: "#8AB9CE",
+    accent: "#222222",
     label: "Balanced",
   },
   cheerful: {
-    bg: "#ffe0ef",
-    hair: "#ffb3d6",
-    accent: "#e05a8c",
+    bg: "#e3f0ff",
+    hair: "#8AB9CE",
+    accent: "#222222",
     label: "Cheerful",
   },
   thoughtful: {
     bg: "#e3f0ff",
-    hair: "#a3c7f7",
-    accent: "#3a4a6b",
+    hair: "#8AB9CE",
+    accent: "#222222",
     label: "Thoughtful",
   },
   curious: {
-    bg: "#ffe3e3",
-    hair: "#d96a6a",
-    accent: "#6b2c2c",
+    bg: "#e3f0ff",
+    hair: "#8AB9CE",
+    accent: "#222222",
     label: "Curious",
   },
 };
 
 const LyraAvatar: React.FC<LyraAvatarProps> = ({
-  emotion,
+  emotion = "balanced",
   showNameTag = false,
   size = 96,
+  color,
+  name,
 }) => {
+  // Convert size if string
+  const sizeInPixels = typeof size === 'number' ? size : 
+                       size === 'sm' ? 32 :
+                       size === 'md' ? 48 : 
+                       size === 'lg' ? 64 : 96;
+                       
+  // If color and name are provided, show a simplified user avatar
+  if (color && name) {
+    return (
+      <div 
+        className="rounded-full flex items-center justify-center text-white font-medium"
+        style={{ 
+          width: sizeInPixels, 
+          height: sizeInPixels, 
+          backgroundColor: color,
+          fontSize: sizeInPixels * 0.4
+        }}
+      >
+        {name}
+      </div>
+    );
+  }
+  
   const cfg = emotionConfig[emotion];
   const faceCX = 48;
   const faceCY = 48;

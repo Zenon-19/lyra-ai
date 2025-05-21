@@ -1,4 +1,4 @@
-// Memory.tsx - Timeline-inspired horizontal memory context manager
+// Memory.tsx - Advanced memory management with timeline visualization
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Glass from './Glass';
@@ -290,7 +290,7 @@ const Memory: React.FC<MemoryProps> = ({ initialMemories = [] }) => {
           >
             <div className="max-w-3xl mx-auto">
               <div className="mb-3 flex justify-between">                <div className="flex items-center gap-2">
-                  <LyraAvatar emotion="thoughtful" animated={false} showNameTag={false} size={32} />
+                  <LyraAvatar emotion="thoughtful" showNameTag={false} size={32} />
                   <h3 className="text-lg font-medium">Editing Memory</h3>
                 </div>
                 

@@ -78,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           transition={{ repeat: Infinity, repeatType: 'mirror', duration: 2 }}
           className="rounded-full"
         >
-          <LyraAvatar emotion="cheerful" animated={true} showNameTag={false} size={isExpanded ? 72 : 48} />
+          <LyraAvatar emotion="cheerful" showNameTag={false} size={isExpanded ? 72 : 48} />
         </motion.div>
       </div>
       {/* Section divider */}
@@ -150,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {isExpanded ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <LyraAvatar emotion="balanced" animated={false} showNameTag={false} size={32} />
+              <LyraAvatar emotion="balanced" showNameTag={false} size={32} />
               <div>
                 <div className="text-xs text-offwhite/80">Powered by</div>
                 <div className="font-medium">Lyra AI</div>
@@ -160,7 +160,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         ) : (
           <div className="w-full flex justify-center">
-            <LyraAvatar emotion="balanced" animated={false} showNameTag={false} size={32} />
+            <LyraAvatar emotion="balanced" showNameTag={false} size={32} />
           </div>
         )}
       </div>

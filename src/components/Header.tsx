@@ -1,18 +1,37 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import LyraAvatar from './LyraAvatar';
 
 interface HeaderProps {
   title?: string;
   onThemeToggle?: () => void;
+  onSettingsClick?: () => void;
+  onLogoutClick?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ 
   title = 'Lyra',
-  onThemeToggle
+  onThemeToggle,
+  onSettingsClick,
+  onLogoutClick
 }) => {
   const { theme, toggleTheme } = useTheme();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Close the user menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   
   // Theme icon based on current theme
   const ThemeIcon = () => {
@@ -55,7 +74,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="flex justify-between items-center py-2 px-4 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full overflow-hidden">
-          <LyraAvatar emotion="balanced" animated={false} showNameTag={false} size={40} />
+          <LyraAvatar emotion="balanced" showNameTag={false} size={40} />
         </div>
         <h1 className="text-xl font-medium">{title}</h1>
       </div>
@@ -92,9 +111,55 @@ const Header: React.FC<HeaderProps> = ({
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
         </motion.button>
-        
-        <div className="w-8 h-8 rounded-full bg-dusty-rose flex items-center justify-center text-white font-medium ml-1">
-          LL
+          {/* User profile button & menu */}
+        <div className="relative" ref={userMenuRef}>
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            className="w-8 h-8 rounded-full bg-dusty-rose flex items-center justify-center text-white font-medium ml-1 cursor-pointer"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+          >
+            LL
+          </motion.div>
+          
+          <AnimatePresence>
+            {showUserMenu && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-charcoal rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50"
+              >
+                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                  <div className="font-medium">Lyra User</div>
+                  <div className="text-sm text-charcoal/60 dark:text-offwhite/60">user@example.com</div>
+                </div>
+                
+                <button 
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+                  onClick={onSettingsClick}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+                  Settings
+                </button>
+                
+                <button 
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2 text-red-600 dark:text-red-400"
+                  onClick={onLogoutClick}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  Logout
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </header>
