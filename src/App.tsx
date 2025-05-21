@@ -16,15 +16,40 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
     return { hasError: true, error };
   }
   componentDidCatch(error: any, errorInfo: any) {
-    // You can log error to an error reporting service here
-    // console.error(error, errorInfo);
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 32, color: '#b91c1c', background: '#fff0f1', fontFamily: 'monospace' }}>
-          <h1>Something went wrong.</h1>
+        <div style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: 32,
+          background: '#fff0f1',
+          color: '#b91c1c',
+          fontFamily: 'monospace',
+          overflow: 'auto',
+          zIndex: 9999
+        }}>
+          <h1>Something went wrong</h1>
           <pre>{this.state.error?.toString()}</pre>
+          <button 
+            onClick={() => window.location.reload()}
+            style={{
+              marginTop: 16,
+              padding: '8px 16px',
+              background: '#b91c1c',
+              color: 'white',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer'
+            }}
+          >
+            Reload Page
+          </button>
         </div>
       );
     }
@@ -33,40 +58,56 @@ class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasErr
 }
 
 const AppContent = () => {
-  // Get authentication state from context
-  const { isAuthenticated, logout } = useAuth();
-  // Check if user wants to see the marketing page (unauthenticated users)
-  const [showMarketingPage, setShowMarketingPage] = useState(true);
+  console.log('[AppContent] Initializing component');
+  
+  try {
+    // Get authentication state from context
+    const { isAuthenticated, logout } = useAuth();
+    console.log('[AppContent] Auth state:', { isAuthenticated });
 
-  // Handle login/registration success
-  const handleAuthSuccess = () => {
-    setShowMarketingPage(false);
-  };
-  
-  // Handle logout
-  const handleLogout = () => {
-    logout();
-    setShowMarketingPage(true);
-  };
-  
-  // Handle entering the app from marketing page
-  const handleEnterApp = () => {
-    setShowMarketingPage(false);
-  };
-  
-  // Handle going back to marketing page
-  const handleGoToMarketing = () => {
-    setShowMarketingPage(true);
-  };
+    // Always start with marketing page
+    const [showMarketingPage, setShowMarketingPage] = useState(() => {
+      // If user is authenticated, we should still show the marketing page initially
+      // but allow them to proceed to the app without re-authentication
+      return true;
+    });
 
-  return (
-    <AnimatePresence mode="wait">
-      {!isAuthenticated ? (
-        // Unauthenticated state
-        showMarketingPage ? (
-          // Marketing landing page
+    // Handle login/registration success
+    const handleAuthSuccess = () => {
+      // Don't automatically hide marketing page on auth success
+      console.log('[AppContent] Authentication successful');
+    };
+    
+    // Handle logout
+    const handleLogout = () => {
+      console.log('[AppContent] Logout requested');
+      try {
+        logout();
+        setShowMarketingPage(true);
+      } catch (error) {
+        console.error('[AppContent] Logout error:', error);
+      }
+    };
+    
+    // Handle entering the app from marketing page
+    const handleEnterApp = () => {
+      // Only proceed to auth page if not authenticated
+      if (!isAuthenticated) {
+        setShowMarketingPage(false);
+      } else {
+        // If already authenticated, go directly to main app
+        setShowMarketingPage(false);
+      }
+    };
+    
+    console.log('[AppContent] Rendering with auth state:', isAuthenticated, 'showing marketing:', showMarketingPage);
+    return (
+      <AnimatePresence mode="wait">
+        {showMarketingPage ? (
+          // Marketing landing page - shown first regardless of auth state
           <motion.div
             key="marketing"
+            className="h-screen overflow-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -74,8 +115,8 @@ const AppContent = () => {
           >
             <Dashboard onGetStarted={handleEnterApp} />
           </motion.div>
-        ) : (
-          // Auth page (login/register)
+        ) : !isAuthenticated ? (
+          // Auth page if not authenticated
           <motion.div
             key="auth"
             initial={{ opacity: 0 }}
@@ -85,24 +126,29 @@ const AppContent = () => {
           >
             <AuthPage onAuthSuccess={handleAuthSuccess} />
           </motion.div>
-        )
-      ) : (
-        // Authenticated state - Main application
-        <motion.div
-          key="main-app"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <MainApp onLogout={handleLogout} />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        ) : (
+          // Main app if authenticated
+          <motion.div
+            key="main-app"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <MainApp onLogout={handleLogout} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  } catch (error) {
+    console.error('[AppContent] Render error:', error);
+    return <div className="p-4 text-red-600">Error: Application failed to initialize. Please refresh the page.</div>;
+  }
 };
 
 function App() {
+  console.log('[App] Initializing root component');
+  
   return (
     <ErrorBoundary>
       <ThemeProvider>

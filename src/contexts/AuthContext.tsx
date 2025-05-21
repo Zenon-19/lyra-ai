@@ -33,24 +33,37 @@ const AuthContext = createContext<AuthContextType>({
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  console.log('[AuthProvider] Initializing...');
+  
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Check if user is logged in on initial load
   useEffect(() => {
+    console.log('[AuthProvider] Checking authentication state...');
+    
     const checkAuth = async () => {
       try {
         // Try to get authentication data from local storage
         const authToken = localStorage.getItem('lyra_auth_token');
         const userData = localStorage.getItem('lyra_user');
         
+        console.log('[AuthProvider] Auth state:', { 
+          hasToken: !!authToken, 
+          hasUserData: !!userData 
+        });
+        
         if (authToken && userData) {
-          setUser(JSON.parse(userData));
+          const parsedUser = JSON.parse(userData);
+          console.log('[AuthProvider] Restoring authenticated session for:', parsedUser.email);
+          setUser(parsedUser);
           setIsAuthenticated(true);
+        } else {
+          console.log('[AuthProvider] No stored authentication found');
         }
       } catch (error) {
-        console.error('Authentication check failed:', error);
+        console.error('[AuthProvider] Authentication check failed:', error);
         // Clear any potentially corrupted auth data
         localStorage.removeItem('lyra_auth_token');
         localStorage.removeItem('lyra_user');

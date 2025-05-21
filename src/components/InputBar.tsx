@@ -63,11 +63,10 @@ const InputBar: React.FC<InputBarProps> = ({ onSend }) => {
       <motion.div 
         className="flex-1 relative"
         animate={{ height: `${Math.max(40, rows * 24)}px` }}
-      >
-        <textarea
+      >        <textarea
           ref={textareaRef}
-          className="absolute inset-0 w-full resize-none rounded-xl border border-charcoal/10 p-2 pr-20
-            focus:outline-none focus:ring-2 focus:ring-deepred bg-offwhite/50 text-charcoal placeholder-charcoal/40"
+          className="absolute inset-0 w-full resize-none rounded-xl border border-gray-200 p-2 pr-20
+            focus:outline-none focus:ring-2 focus:ring-[#8AB9CE]/50 bg-white text-[#222222] placeholder-[#6B7280]"
           placeholder="Message Lyra..."
           value={input}
           onChange={handleInput}
@@ -79,7 +78,7 @@ const InputBar: React.FC<InputBarProps> = ({ onSend }) => {
           <motion.button 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="p-1.5 hover:bg-charcoal/5 rounded-lg transition-colors text-charcoal/60 hover:text-deepred"
+            className="p-1.5 hover:bg-[#F9FAFB] rounded-lg transition-colors text-[#6B7280] hover:text-[#8AB9CE]"
             onClick={() => setShowEmoji(prev => !prev)}
             title="Add emoji (Ctrl+E)"
           >
@@ -89,7 +88,7 @@ const InputBar: React.FC<InputBarProps> = ({ onSend }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className={`p-1.5 rounded-lg transition-colors ${
-              isRecording ? 'text-deepred animate-pulse' : 'text-charcoal/60 hover:text-deepred'
+              isRecording ? 'text-[#8AB9CE] animate-pulse' : 'text-[#6B7280] hover:text-[#8AB9CE]'
             }`}
             onClick={toggleVoiceRecording}
             title="Voice input (Ctrl+Alt+V)"
@@ -112,13 +111,11 @@ const InputBar: React.FC<InputBarProps> = ({ onSend }) => {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      <motion.button
+      </AnimatePresence>      <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="px-4 py-2 bg-deepred text-offwhite rounded-xl shadow-md hover:shadow-lg 
-          transition-shadow disabled:opacity-50 disabled:cursor-not-allowed h-10"
+        className="px-4 py-2 bg-black text-white rounded-xl shadow-sm hover:bg-[#1F1F1F] 
+          transition-all disabled:opacity-50 disabled:cursor-not-allowed h-10"
         onClick={() => {
           if (input.trim()) {
             onSend(input.trim());

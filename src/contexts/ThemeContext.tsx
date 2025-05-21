@@ -28,19 +28,26 @@ export const ThemeContext = createContext<ThemeContextType>({
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  console.log('[ThemeProvider] Initializing...');
+
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem('lyra-theme');
+    console.log('[ThemeProvider] Initial theme:', saved || 'light');
     return (saved as Theme) || 'light';
   });
   const [followSystemTheme, setFollowSystemTheme] = useState<boolean>(() => {
-    return localStorage.getItem('lyra-follow-system-theme') === 'true';
+    const follow = localStorage.getItem('lyra-follow-system-theme') === 'true';
+    console.log('[ThemeProvider] Follow system theme:', follow);
+    return follow;
   });
 
   // System theme detection
   const detectSystemTheme = (): Theme => {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      console.log('[ThemeProvider] Detected system theme: dark');
       return 'dark';
     }
+    console.log('[ThemeProvider] Detected system theme: light');
     return 'light';
   };
 
@@ -85,6 +92,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [followSystemTheme]);
 
   useEffect(() => {
+    console.log('[ThemeProvider] Theme changed:', theme);
     // Set data-theme attribute for styling
     document.documentElement.setAttribute('data-theme', theme);
     

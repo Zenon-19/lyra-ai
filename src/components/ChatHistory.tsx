@@ -24,8 +24,8 @@ const formatTime = (date: Date) => {
 };
 
 const bubbleStyles = {
-  user: 'bg-gradient-to-br from-deepred to-deepred/90 text-offwhite self-end',
-  lyra: 'bg-gradient-to-br from-charcoal to-charcoal/90 text-offwhite self-start',
+  user: 'bg-gradient-to-br from-[#222222] to-[#333333] text-white self-end',
+  lyra: 'bg-gradient-to-br from-[#8AB9CE] to-[#7CAFC7] text-white self-start',
 };
 
 const messageVariants = {

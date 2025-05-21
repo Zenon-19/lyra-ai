@@ -1,5 +1,6 @@
 // LyraAvatar: Futuristic, expressive, anime-inspired AI avatar with 4 emotional states
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export type LyraEmotion = "balanced" | "cheerful" | "thoughtful" | "curious";
 

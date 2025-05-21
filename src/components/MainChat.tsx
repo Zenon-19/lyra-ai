@@ -23,14 +23,13 @@ const MainChat: React.FC = () => {
   useEffect(() => {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages]);
-
   return (
-    <main className="flex-1 flex flex-col h-full bg-offwhite">
+    <main className="flex-1 flex flex-col h-full bg-[#F9FAFB]">
       <div ref={chatRef} className="flex-1 overflow-y-auto p-4">
         <ChatHistory messages={messages} />
         <StreamingAssistantResponse isTyping={isTyping} />
       </div>
-      <div className="border-t border-charcoal/10 p-2">
+      <div className="border-t border-gray-200 bg-white p-2 shadow-sm">
         <InputBar onSend={handleSend} />
       </div>
     </main>
