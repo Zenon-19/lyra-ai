@@ -68,7 +68,7 @@ You can deploy in two ways:
 
 1. Clone the repository
 ```bash
-git clone https://github.com/laksh/lyra-ai.git
+git clone https://github.com/Zenon-19/lyra-ai.git
 cd lyra-ai
 ```
 
