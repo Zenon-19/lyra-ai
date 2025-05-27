@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, chat, memory, skills, voice
+from app.api import router as lyra_router
 from app.core.config import settings
 from app.db.init_db import init_db
 import sentry_sdk
@@ -24,12 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/api", tags=["auth"])
-app.include_router(chat.router, prefix="/api", tags=["chat"])
-app.include_router(memory.router, prefix="/api", tags=["memory"])
-app.include_router(skills.router, prefix="/api", tags=["skills"])
-app.include_router(voice.router, prefix="/api", tags=["voice"])
+# Include new single router for all endpoints
+app.include_router(lyra_router, prefix="/api")
 
 @app.on_event("startup")
 async def startup_event():
